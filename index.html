@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz de Super-Heróis</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #1e1e2f, #2e2e4f);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #facc15;
+      margin-bottom: 10px;
+    }
+
+    .screen {
+      display: none;
+      text-align: center;
+      max-width: 500px;
+      background-color: #2c2c3c;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .emoji {
+      font-size: 100px;
+      margin-bottom: 10px;
+    }
+
+    .question {
+      font-size: 1.3em;
+      margin-bottom: 15px;
+    }
+
+    .answers button,
+    .start-btn {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      background-color: #4f46e5;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .answers button:hover,
+    .start-btn:hover {
+      background-color: #4338ca;
+    }
+
+    #result {
+      font-size: 1.2em;
+      margin-top: 20px;
+      color: #34d399;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🦸 Quiz de Super-Heróis 🦹</h1>
+
+  <div id="start-screen" class="screen active">
+    <p>Teste seus conhecimentos sobre super-heróis da Marvel e DC! 💥</p>
+    <button class="start-btn" onclick="startQuiz()">Começar o Quiz</button>
+  </div>
+
+  <div id="quiz-screen" class="screen">
+    <div id="emoji" class="emoji">🦇</div>
+    <div class="question" id="question"></div>
+    <div class="answers" id="answers"></div>
+  </div>
+
+  <div id="result-screen" class="screen">
+    <div id="result-emoji" class="emoji">🏆</div>
+    <div id="result"></div>
+    <button class="start-btn" onclick="restartQuiz()">Tentar novamente</button>
+  </div>
+
+  <script>
+    const quizData = [
+      { question: "Qual herói é conhecido como 'O Cavaleiro das Trevas'?", options: ["Superman", "Homem de Ferro", "Batman", "Thor"], answer: "Batman", emoji: "🦇" },
+      { question: "Qual é o nome verdadeiro do Homem-Aranha?", options: ["Clark Kent", "Peter Parker", "Bruce Wayne", "Tony Stark"], answer: "Peter Parker", emoji: "🕷️" },
+      { question: "Qual desses heróis faz parte dos Vingadores?", options: ["Wolverine", "Flash", "Homem de Ferro", "Batman"], answer: "Homem de Ferro", emoji: "🤖" },
+      { question: "Qual herói é conhecido por seu escudo vermelho, branco e azul?", options: ["Capitão América", "Superman", "Shazam", "Lanterna Verde"], answer: "Capitão América", emoji: "🛡️" }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function startQuiz() {
+      document.getElementById("start-screen").classList.remove("active");
+      document.getElementById("quiz-screen").classList.add("active");
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = quizData[currentQuestion];
+      document.getElementById("question").textContent = q.question;
+      document.getElementById("emoji").textContent = q.emoji;
+      const answersDiv = document.getElementById("answers");
+      answersDiv.innerHTML = "";
+      q.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.textContent = option;
+        btn.onclick = () => checkAnswer(option);
+        answersDiv.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selected) {
+      const q = quizData[currentQuestion];
+      if (selected === q.answer) {
+        score++;
+      }
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById("quiz-screen").classList.remove("active");
+      document.getElementById("result-screen").classList.add("active");
+      let message = "";
+      if (score === quizData.length) {
+        message = "Parabéns! Você é um verdadeiro herói! 🏆";
+      } else if (score >= 2) {
+        message = "Muito bem! Mas ainda há vilões para derrotar! ⚡";
+      } else {
+        message = "Talvez seja hora de voltar para o treinamento... 🧠";
+      }
+      document.getElementById("result").textContent =
+        `${message}
+Você acertou ${score} de ${quizData.length} perguntas.`;
+    }
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      document.getElementById("result-screen").classList.remove("active");
+      document.getElementById("quiz-screen").classList.add("active");
+      showQuestion();
+    }
+  </script>
+</body>
+</html>
